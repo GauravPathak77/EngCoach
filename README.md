@@ -44,7 +44,7 @@ Then fill in what you have:
 
 | Variable | Needed for | Without it |
 |---|---|---|
-| `ANTHROPIC_API_KEY` | **The coach itself.** Conversation, error analysis, vocabulary, reports. | Scripted canned replies and pattern-matched findings. Not the product. |
+| Hosted coach model key (see `.env.example`) | **The coach itself.** Conversation, error analysis, vocabulary, reports. | Scripted canned replies and pattern-matched findings. Not the product. |
 | `DEEPGRAM_API_KEY` | Speech recognition with word-level timings. | Browser Web Speech API: you can talk, but pace / pause profile / run length are unavailable and every ASR-prone correction is suppressed (ADR-018). |
 | `OPENAI_API_KEY` | The coach's voice (female by default). | Your browser's built-in speech synthesis — we pick the closest female voice it offers and say so when it has none. |
 | `DATABASE_URL` | Pointing at Neon / Supabase / your own Postgres. | Embedded PGlite on disk — real Postgres, zero setup (ADR-016). |
@@ -115,8 +115,8 @@ how each lane is currently routed. See ADR-022.
 Restart `npm run dev` after changing `.env.local`. The Settings page shows exactly which
 providers are live.
 
-**`ANTHROPIC_API_KEY` is the one that matters.** The other two degrade gracefully; without this
-one you are looking at a skeleton.
+**The coach model key is the one that matters.** The other two degrade gracefully; without a
+coach model — hosted or local — you are looking at a skeleton.
 
 ## Running without credentials
 
@@ -262,7 +262,7 @@ negotiation / interview / storytelling modes, mobile app, multi-user, payments.
 
 **Needs credentials to be real:** the coach's replies, analyzer quality, and the voice. The
 analyzer precision gate (≥0.90 on blocking findings) is **unverified** — it cannot be measured
-without `ANTHROPIC_API_KEY`. Run `npm run eval:analyzers -- --gate` once you have one.
+without a hosted coach model. Run `npm run eval:analyzers -- --gate` once one is configured.
 
 **Environment constraints:** PGlite is single-writer (see the note under Commands). Password reset
 is not implemented — single user, and `npm run db:reset` exists.
