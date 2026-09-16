@@ -1,0 +1,145 @@
+@import 'tailwindcss';
+
+/**
+ * UX.md governing rule: nothing on screen may compete for attention while the user is speaking.
+ * Concretely, that shapes the palette — corrections are neutral-toned, never error-coloured.
+ * This is a conversation, not a linter.
+ */
+
+@theme {
+  --color-ink: #0d0f14;
+  --color-surface: #14171f;
+  --color-raised: #1c202b;
+  --color-line: #2a3040;
+  --color-text: #e8eaf0;
+  --color-muted: #9aa3b8;
+  --color-dim: #6b7488;
+
+  --color-accent: #7dd3c0;
+  --color-accent-dim: #3d6b62;
+  --color-warm: #e8b88a;
+
+  --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--color-ink);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* The orb pulse. Reduced-motion turns it into a static level meter via the rule above. */
+@keyframes orb-breathe {
+  0%, 100% { transform: scale(1); opacity: 0.85; }
+  50% { transform: scale(1.04); opacity: 1; }
+}
+
+@keyframes card-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-breathe {
+  animation: orb-breathe 3.2s ease-in-out infinite;
+}
+
+.animate-card-in {
+  animation: card-in 320ms ease-out both;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: var(--color-line);
+  border-radius: 3px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ---------------------------------------------------------------------------
+   Coach avatar (ADR-021).
+
+   All of this is suppressed by the prefers-reduced-motion rule above, which is why the
+   speaking state also carries a static equaliser indicator — the state must stay legible
+   when the animation does not run.
+   --------------------------------------------------------------------------- */
+
+/* Blink: eyes squash briefly. The long 0%-92% hold is what makes it read as a blink
+   rather than a pulse. */
+@keyframes coach-blink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  95%, 97% { transform: scaleY(0.1); }
+}
+.coach-blink {
+  animation: coach-blink 5.2s ease-in-out infinite;
+}
+
+/* Speaking: the mouth opens and closes. Deliberately NOT phoneme-synced — see CoachAvatar. */
+@keyframes coach-mouth {
+  0%, 100% { transform: scaleY(0.55) scaleX(0.96); }
+  25% { transform: scaleY(1.15) scaleX(1.03); }
+  50% { transform: scaleY(0.7) scaleX(0.98); }
+  75% { transform: scaleY(1) scaleX(1.02); }
+}
+.coach-mouth {
+  animation: coach-mouth 340ms ease-in-out infinite;
+}
+
+/* Head drift while speaking, and a small attentive settle while listening. */
+@keyframes coach-speaking {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  33% { transform: translateY(-1.5px) rotate(-0.5deg); }
+  66% { transform: translateY(1px) rotate(0.5deg); }
+}
+.coach-speaking {
+  animation: coach-speaking 4.5s ease-in-out infinite;
+}
+
+@keyframes coach-listening {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-1px) rotate(1deg); }
+}
+.coach-listening {
+  animation: coach-listening 6s ease-in-out infinite;
+}
+
+/* Thinking dots drifting away from her, off the face. */
+@keyframes coach-thinking {
+  0%, 100% { opacity: 0.35; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(-3px); }
+}
+.coach-thinking {
+  animation: coach-thinking 1.6s ease-in-out infinite;
+}
+
+/* Speaking equaliser bars. */
+@keyframes coach-bar {
+  0%, 100% { height: 4px; opacity: 0.5; }
+  50% { height: 12px; opacity: 1; }
+}
+.coach-bar {
+  height: 4px;
+  animation: coach-bar 620ms ease-in-out infinite;
+}

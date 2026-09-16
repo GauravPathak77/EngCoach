@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - run: npm ci
+
+      # typecheck + lint + test + architecture guard (ADR-014).
+      - run: npm run verify
+
+      # The analyzer eval runs without credentials to prove the harness and fixtures are intact,
+      # but it CANNOT satisfy the M5 precision gate that way and says so. Add ANTHROPIC_API_KEY
+      # as a repository secret and switch this to `-- --gate` to enforce it for real.
+      - run: npm run eval:analyzers
